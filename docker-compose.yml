@@ -1,0 +1,29 @@
+services:
+
+  backend-lib:
+    build: .
+    container_name: 'backend-lib'
+    volumes:
+      - './src:/server/src'
+      - './migrations:/server/migrations'
+    depends_on:
+      - postgres-lib
+    env_file:
+      - ".env"
+    ports:
+      - '127.0.0.1:8000:8000'
+
+  postgres-lib:
+    container_name: 'postgres-lib'
+    image: 'postgres:16.1-bookworm'
+    restart: on-failure
+    volumes:
+      - library_db:/var/lib/postgresql/data/
+    env_file:
+      - '.env'
+    ports:
+      - '127.0.0.1:5432:5432'
+
+volumes:
+  library_db: {}
+
