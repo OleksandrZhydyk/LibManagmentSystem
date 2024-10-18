@@ -10,8 +10,14 @@ class Config(BaseSettings):
     POSTGRES_HOST: str
     POSTGRES_PORT: int
 
-    PGADMIN_DEFAULT_EMAIL: str
-    PGADMIN_DEFAULT_PASSWORD: str
+    JWT_SECRET: str
+    JWT_ALGORITHM: str
+    ACCESS_TOKEN_LIFETIME: int
+    REFRESH_TOKEN_LIFETIME: int
+
+    AUTH_COOKIE_HTTPONLY: bool
+    AUTH_COOKIE_SECURE: bool
+    AUTH_COOKIE_SAME_SITE: str
 
     @property
     def DB_URL(self) -> str:

@@ -1,7 +1,12 @@
 from datetime import date
+from typing import TYPE_CHECKING
 
 from database.base import Base
+from database.models.many_to_many import book_author_association
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+if TYPE_CHECKING:
+    from database.models import Book
 
 
 class Author(Base):
@@ -11,4 +16,4 @@ class Author(Base):
     surname: Mapped[str]
     birthdate: Mapped[date]
 
-    books = relationship("Book", back_populates="author")
+    books: Mapped[list["Book"]] = relationship(secondary=book_author_association, back_populates="authors")

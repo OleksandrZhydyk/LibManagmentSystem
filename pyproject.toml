@@ -12,6 +12,10 @@ sqlalchemy = "^2.0.36"
 alembic = "^1.13.3"
 pydantic-settings = "^2.5.2"
 asyncpg = "^0.29.0"
+fastapi-pagination = "^0.12.31"
+fastapi-filter = {extras = ["sqlalchemy"], version = "^2.0.0"}
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+pyjwt = "^2.9.0"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -59,17 +63,28 @@ exclude = [
     ".log",
 ]
 
+
 # Same as Black.
 line-length = 120
 indent-width = 4
 
 target-version = "py312"
 
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = [
+    "fastapi.Depends",
+    "fastapi.params.Depends",
+    "fastapi.Query",
+    "fastapi.params.Query",
+    "fastapi.Security",
+    "fastapi_filter.FilterDepends"
+]
+
 [tool.ruff.lint]
 # Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
 # Unlike Flake8, Ruff doesn't enable pycodestyle warnings (`W`) or
 select = ["A", "B", "E", "F", "UP", "I001"]
-#ignore = ["A003", "E402", "E722", "B904", "A001", "A002", "B010", "F403", "B018", "F405", "B009", "B007"]
+#ignore = ["A003", "E402"]
 
 # Allow fix for all enabled rules (when `--fix`) is provided.
 fixable = [

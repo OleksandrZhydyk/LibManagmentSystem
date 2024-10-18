@@ -17,8 +17,10 @@ RUN poetry install --no-root --only main
 COPY ./src ./src
 COPY ./migrations ./migrations
 COPY ./alembic.ini ./alembic.ini
+COPY ./script ./script
+
+RUN chmod a+x ./script/run_server.sh
 
 EXPOSE 8000
 
-# Command to run FastAPI with Uvicorn
-CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["bash"]

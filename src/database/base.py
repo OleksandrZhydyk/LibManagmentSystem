@@ -1,7 +1,7 @@
 import datetime
 
 from config import conf
-from sqlalchemy import DateTime
+from sqlalchemy.dialects.postgresql import TIMESTAMP
 from sqlalchemy.ext.asyncio import AsyncAttrs, AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
@@ -12,12 +12,14 @@ async_session = async_sessionmaker(engine, expire_on_commit=False)
 class Base(AsyncAttrs, DeclarativeBase):
     __abstract__ = True
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True, autoincrement=True)
     created_at: Mapped[datetime.datetime] = mapped_column(
-        DateTime(), default=lambda: datetime.datetime.now(datetime.UTC)
+        TIMESTAMP(timezone=True), default=lambda: datetime.datetime.now(datetime.UTC)
     )
     updated_at: Mapped[datetime.datetime] = mapped_column(
-        default=lambda: datetime.datetime.now(datetime.UTC), onupdate=lambda: datetime.datetime.now(datetime.UTC)
+        TIMESTAMP(timezone=True),
+        default=lambda: datetime.datetime.now(datetime.UTC),
+        onupdate=lambda: datetime.datetime.now(datetime.UTC),
     )
 
 

@@ -1,8 +1,14 @@
 from datetime import date
+from typing import TYPE_CHECKING
 
 from database.base import Base
+from database.models import Author
+from database.models.many_to_many import book_author_association
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+if TYPE_CHECKING:
+    from database.models import Author
 
 
 class Book(Base):
@@ -13,11 +19,12 @@ class Book(Base):
     isbn: Mapped[str] = mapped_column(unique=True, nullable=False)
     publish_date: Mapped[date] = mapped_column(nullable=False)
     quantity: Mapped[int]
-    author_id: Mapped[int] = mapped_column(ForeignKey("authors.id"))
+
     genre_id: Mapped[int] = mapped_column(ForeignKey("genres.id"))
     publisher_id: Mapped[int] = mapped_column(ForeignKey("publishers.id"))
 
-    author = relationship("Author", back_populates="books")
+    authors: Mapped[list["Author"]] = relationship(secondary=book_author_association, back_populates="books")
+
     genre = relationship("Genre")
     publisher = relationship("Publisher")
-    borrow_history = relationship("Borrow", back_populates="book")
+    borrow_history = relationship("BorrowHistory", back_populates="book")

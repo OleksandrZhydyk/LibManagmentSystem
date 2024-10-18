@@ -6,6 +6,7 @@ services:
     volumes:
       - './src:/server/src'
       - './migrations:/server/migrations'
+    command: ./script/run_server.sh
     depends_on:
       - postgres-lib
     env_file:
