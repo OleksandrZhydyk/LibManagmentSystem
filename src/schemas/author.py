@@ -1,6 +1,5 @@
 import datetime
 
-from asyncpg.pgproto.pgproto import timedelta
 from pydantic import BaseModel, ConfigDict, constr, field_validator
 
 
@@ -12,13 +11,9 @@ class AuthorCreateRequest(BaseModel):
     @field_validator("birthdate")
     @classmethod
     def validate_birthdate(cls, birthdate: datetime.date) -> datetime.date:
-        today = datetime.date.today()
-        min_age_years = 16
-        max_age_years = 120
-        if today - timedelta(days=min_age_years * 365) < birthdate or birthdate < today - timedelta(
-            days=max_age_years * 365
-        ):
-            raise ValueError("Incorrect birthdate.")
+        today_date = datetime.date.today()
+        if birthdate >= today_date:
+            raise ValueError("Incorrect birthdate, birthdate can not be today or in future.")
         return birthdate
 
 

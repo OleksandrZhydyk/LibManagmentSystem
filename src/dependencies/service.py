@@ -62,5 +62,4 @@ def get_auth_service(session: AsyncSession = Depends(get_session)) -> AuthServic
 def get_borrow_service(session: AsyncSession = Depends(get_session)) -> BorrowService:
     borrow_repo = BorrowRepository(session)
     book_repo = BookRepository(session)
-    user_repo = UserRepository(session)
-    return BorrowService(borrow_repo=borrow_repo, book_repo=book_repo, user_repo=user_repo)
+    return BorrowService(borrow_repo=borrow_repo, book_repo=book_repo)

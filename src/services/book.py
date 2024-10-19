@@ -44,10 +44,15 @@ class BookService:
         authors = await self.author_repo.get_authors(book.authors)
 
         if authors.missing_authors:
-            raise ValueError(f"Authors {",".join(authors.missing_authors)} don't exist. Create them before.")
+            raise ValueError("Author doesn't exist.")
 
         genre = await self.genre_repo.get_one([SearchFieldDTO(column="name", value=book.genre)])
+        if not genre:
+            raise ValueError("Genre doesn't exist.")
+
         publisher = await self.publisher_repo.get_one([SearchFieldDTO(column="name", value=book.publisher)])
+        if not publisher:
+            raise ValueError("Publisher doesn't exist.")
 
         book_dct = book.model_dump()
         book_dct["authors"] = authors.found_authors

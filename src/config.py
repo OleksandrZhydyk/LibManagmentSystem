@@ -1,8 +1,10 @@
+from typing import Literal
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Config(BaseSettings):
-    model_config = SettingsConfigDict(case_sensitive=True, env_file="../.env", env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(case_sensitive=True, env_file=".env", env_file_encoding="utf-8")
 
     POSTGRES_DB: str
     POSTGRES_PASSWORD: str
@@ -17,7 +19,7 @@ class Config(BaseSettings):
 
     AUTH_COOKIE_HTTPONLY: bool
     AUTH_COOKIE_SECURE: bool
-    AUTH_COOKIE_SAME_SITE: str
+    AUTH_COOKIE_SAME_SITE: Literal["lax", "none", "strict"]
 
     @property
     def DB_URL(self) -> str:
@@ -28,3 +30,6 @@ class Config(BaseSettings):
 
 
 conf = Config()
+
+# def get_config():
+#     return Config()

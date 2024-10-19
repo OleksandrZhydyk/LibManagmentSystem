@@ -1,30 +1,31 @@
 from typing import Annotated
 
-from pydantic import AfterValidator, BaseModel, ConfigDict, EmailStr
+from pydantic import AfterValidator, BaseModel, ConfigDict, EmailStr, constr, model_validator
 from pydantic_core.core_schema import ValidationInfo
 from security import hash_password
 
 
 def ensure_passwords_match(v: str, info: ValidationInfo) -> str:
-    if "confirmed_password" in info.data and v != info.data["confirmed_password"]:
+    if "password" in info.data and v != info.data["password"]:
         raise ValueError("Please enter the same value for password and confirmation password field.")
     return v
 
 
-def get_hashed_password(v: str, info: ValidationInfo) -> str:
-    password = ensure_passwords_match(v, info)
-    return hash_password(password)
-
-
-class UserCreate(BaseModel):
+class UserCreateRequest(BaseModel):
     name: str
     surname: str
     email: EmailStr
-    password: Annotated[str, AfterValidator(get_hashed_password)]
-    confirmed_password: str
+    password: constr(min_length=8)
+    confirmed_password: Annotated[str, AfterValidator(ensure_passwords_match)]
+
+    @model_validator(mode="after")
+    @classmethod
+    def post_update(cls, user):
+        user.password = hash_password(user.password)
+        return user
 
 
-class UserOut(BaseModel):
+class UserResponse(BaseModel):
     id: int
     name: str
     surname: str

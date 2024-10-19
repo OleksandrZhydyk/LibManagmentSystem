@@ -2,7 +2,7 @@ from database.models import User
 from dependencies.service import get_auth_service
 from fastapi import Depends, HTTPException, Security
 from fastapi.security import HTTPAuthorizationCredentials
-from schemas.user import UserOut
+from schemas.user import UserResponse
 from security import bearer_scheme, decode_jwt
 from services.auth import AuthService
 from starlette import status
@@ -45,7 +45,7 @@ async def get_current_user(
     return await get_user(email, service)
 
 
-async def get_current_active_user(current_user: UserOut = Security(get_current_user)) -> UserOut:
+async def get_current_active_user(current_user: UserResponse = Security(get_current_user)) -> UserResponse:
     if not current_user.is_active:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user

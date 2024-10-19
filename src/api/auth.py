@@ -4,7 +4,7 @@ from dependencies.service import get_auth_service
 from fastapi import APIRouter, Depends, HTTPException
 from schemas.auth import AccessToken, UserLogin
 from schemas.exception import HTTPExceptionResponse
-from schemas.user import UserCreate
+from schemas.user import UserCreateRequest
 from security import set_cookie_to_response
 from services.auth import AuthService
 from starlette.responses import Response
@@ -19,7 +19,7 @@ router = APIRouter()
 )
 async def register(
     response: Response,
-    user_create: UserCreate,
+    user_create: UserCreateRequest,
     service: AuthService = Depends(get_auth_service),
 ):
     try:

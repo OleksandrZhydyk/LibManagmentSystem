@@ -75,10 +75,7 @@ class BaseRepository:
         filters = self._construct_filters(search_fields)
         query = select(self.model).where(and_(*filters))
         response = await self.session.execute(query)
-        instance = response.scalars().first()
-        if instance:
-            return instance
-        raise ValueError("Not found.")
+        return response.scalars().first()
 
     async def delete(self, pk: int) -> None:
         """

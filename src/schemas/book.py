@@ -16,8 +16,8 @@ class BookCreateRequest(BaseModel):
     @field_validator("publish_date")
     @classmethod
     def validate_publish_date(cls, publish_date: datetime.date) -> datetime.date:
-        if publish_date > datetime.date.today():
-            raise ValueError("Publish date must not be in the future")
+        if publish_date >= datetime.date.today():
+            raise ValueError("Publish date can not be in the future.")
         return publish_date
 
     @field_validator("genre")

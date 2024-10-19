@@ -4,7 +4,7 @@ from dto.repository import SearchFieldDTO
 from dto.service import TokenDTO
 from repositories.user import UserRepository
 from schemas.auth import UserLogin
-from schemas.user import UserCreate
+from schemas.user import UserCreateRequest
 from security import sign_jwt, verify_password
 
 
@@ -12,7 +12,7 @@ class AuthService:
     def __init__(self, user_repo: UserRepository) -> None:
         self.user_repo = user_repo
 
-    async def register(self, user_create: UserCreate) -> TokenDTO:
+    async def register(self, user_create: UserCreateRequest) -> TokenDTO:
         fields = [SearchFieldDTO(column="email", value=user_create.email)]
         if await self.user_repo.exists(search_fields=fields):
             raise ValueError(f"User email {user_create.email} already exists.")
