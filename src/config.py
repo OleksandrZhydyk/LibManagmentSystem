@@ -1,10 +1,13 @@
+import os
 from typing import Literal
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Config(BaseSettings):
-    model_config = SettingsConfigDict(case_sensitive=True, env_file=".env", env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(
+        case_sensitive=True, env_file=os.getenv("ENV_FILE_PATH"), env_file_encoding="utf-8"
+    )
 
     POSTGRES_DB: str
     POSTGRES_PASSWORD: str
@@ -30,6 +33,3 @@ class Config(BaseSettings):
 
 
 conf = Config()
-
-# def get_config():
-#     return Config()

@@ -1,4 +1,4 @@
-import config
+import config as app_config
 import pytest
 from database.models import Author
 from dto.repository import AuthorsExistDTO
@@ -14,7 +14,7 @@ class TestConfig(BaseSettings):
         return "sqlite+aiosqlite:///data.db"
 
 
-config.conf = TestConfig()
+app_config.conf = TestConfig()
 
 
 @pytest.fixture(scope="function")

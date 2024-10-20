@@ -1,0 +1,12 @@
+services:
+
+  test-lib:
+    build:
+      context: .
+      dockerfile: Dockerfile-test
+    container_name: 'test-lib'
+    command: ./script/run_tests.sh
+    volumes:
+      - ./logs:/server/logs
+    env_file:
+      - ".env"

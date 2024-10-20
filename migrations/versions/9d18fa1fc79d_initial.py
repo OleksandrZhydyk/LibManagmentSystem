@@ -1,18 +1,18 @@
-"""Initial revision
+"""initial
 
-Revision ID: 0c29418ac76e
+Revision ID: 9d18fa1fc79d
 Revises: 
-Create Date: 2024-10-16 18:16:12.043550
+Create Date: 2024-10-20 18:38:18.796455
 
 """
 from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
-
+from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = '0c29418ac76e'
+revision: str = '9d18fa1fc79d'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -24,18 +24,18 @@ def upgrade() -> None:
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('surname', sa.String(), nullable=False),
     sa.Column('birthdate', sa.Date(), nullable=False),
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
-    sa.Column('updated_at', sa.DateTime(), nullable=False),
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('created_at', postgresql.TIMESTAMP(timezone=True), nullable=False),
+    sa.Column('updated_at', postgresql.TIMESTAMP(timezone=True), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name')
     )
     op.create_index(op.f('ix_authors_id'), 'authors', ['id'], unique=False)
     op.create_table('genres',
     sa.Column('name', sa.String(), nullable=False),
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
-    sa.Column('updated_at', sa.DateTime(), nullable=False),
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('created_at', postgresql.TIMESTAMP(timezone=True), nullable=False),
+    sa.Column('updated_at', postgresql.TIMESTAMP(timezone=True), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name')
     )
@@ -43,9 +43,9 @@ def upgrade() -> None:
     op.create_table('publishers',
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('established_year', sa.Date(), nullable=False),
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
-    sa.Column('updated_at', sa.DateTime(), nullable=False),
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('created_at', postgresql.TIMESTAMP(timezone=True), nullable=False),
+    sa.Column('updated_at', postgresql.TIMESTAMP(timezone=True), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name')
     )
@@ -54,10 +54,12 @@ def upgrade() -> None:
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('surname', sa.String(), nullable=False),
     sa.Column('email', sa.String(), nullable=False),
-    sa.Column('birthdate', sa.Date(), nullable=False),
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
-    sa.Column('updated_at', sa.DateTime(), nullable=False),
+    sa.Column('birthdate', sa.Date(), nullable=True),
+    sa.Column('is_active', sa.Boolean(), nullable=False),
+    sa.Column('password', sa.String(), nullable=False),
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('created_at', postgresql.TIMESTAMP(timezone=True), nullable=False),
+    sa.Column('updated_at', postgresql.TIMESTAMP(timezone=True), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email')
     )
@@ -68,30 +70,36 @@ def upgrade() -> None:
     sa.Column('isbn', sa.String(), nullable=False),
     sa.Column('publish_date', sa.Date(), nullable=False),
     sa.Column('quantity', sa.Integer(), nullable=False),
-    sa.Column('author_id', sa.Integer(), nullable=False),
     sa.Column('genre_id', sa.Integer(), nullable=False),
     sa.Column('publisher_id', sa.Integer(), nullable=False),
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
-    sa.Column('updated_at', sa.DateTime(), nullable=False),
-    sa.ForeignKeyConstraint(['author_id'], ['authors.id'], ),
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('created_at', postgresql.TIMESTAMP(timezone=True), nullable=False),
+    sa.Column('updated_at', postgresql.TIMESTAMP(timezone=True), nullable=False),
     sa.ForeignKeyConstraint(['genre_id'], ['genres.id'], ),
     sa.ForeignKeyConstraint(['publisher_id'], ['publishers.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('isbn')
     )
     op.create_index(op.f('ix_books_id'), 'books', ['id'], unique=False)
+    op.create_table('book_author',
+    sa.Column('book_id', sa.Integer(), nullable=False),
+    sa.Column('author_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['author_id'], ['authors.id'], ),
+    sa.ForeignKeyConstraint(['book_id'], ['books.id'], ),
+    sa.PrimaryKeyConstraint('book_id', 'author_id')
+    )
     op.create_table('borrow_history',
     sa.Column('borrower_name', sa.String(), nullable=False),
     sa.Column('borrower_surname', sa.String(), nullable=False),
-    sa.Column('borrow_date', sa.Date(), nullable=False),
-    sa.Column('return_date', sa.Date(), nullable=False),
+    sa.Column('borrow_date', postgresql.TIMESTAMP(timezone=True), nullable=False),
+    sa.Column('return_date', postgresql.TIMESTAMP(timezone=True), nullable=True),
     sa.Column('book_id', sa.Integer(), nullable=False),
     sa.Column('borrower_id', sa.Integer(), nullable=False),
     sa.Column('book_name', sa.String(), nullable=False),
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
-    sa.Column('updated_at', sa.DateTime(), nullable=False),
+    sa.Column('book_isbn', sa.String(), nullable=False),
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('created_at', postgresql.TIMESTAMP(timezone=True), nullable=False),
+    sa.Column('updated_at', postgresql.TIMESTAMP(timezone=True), nullable=False),
     sa.ForeignKeyConstraint(['book_id'], ['books.id'], ondelete='SET NULL'),
     sa.ForeignKeyConstraint(['borrower_id'], ['users.id'], ondelete='SET NULL'),
     sa.PrimaryKeyConstraint('id')
@@ -103,7 +111,8 @@ def upgrade() -> None:
 def downgrade() -> None:
     # ### commands auto generated by Alembic - please adjust! ###
     op.drop_index(op.f('ix_borrow_history_id'), table_name='borrow_history')
-    op.drop_table('borrows')
+    op.drop_table('borrow_history')
+    op.drop_table('book_author')
     op.drop_index(op.f('ix_books_id'), table_name='books')
     op.drop_table('books')
     op.drop_index(op.f('ix_users_id'), table_name='users')

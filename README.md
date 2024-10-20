@@ -48,6 +48,16 @@ The server will be running at http://localhost:8000.
 
 **ReDoc Documentation**: Visit http://localhost:8000/redoc for an alternative API documentation format.
 
+## Run tests
+```shell
+docker compose -f docker-compose-test.yml up -d
+```
+
+Tests logs will be available in container
+
+`~/logs/tests.log`
+
+
 
 ## Database Models
 **Book**: Stores information about each book (title, ISBN, author, publish date, etc.).  
