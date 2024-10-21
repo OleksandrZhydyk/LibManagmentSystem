@@ -53,7 +53,7 @@ The server will be running at http://localhost:8000.
 docker compose -f docker-compose-test.yml up -d
 ```
 
-Tests logs will be available in container
+Tests logs will be available on hosts in logs project directory.
 
 `~/logs/tests.log`
 
