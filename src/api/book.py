@@ -3,12 +3,14 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi_filter import FilterDepends
 from fastapi_pagination import LimitOffsetPage
 from filters import BookFilter
+from logger import get_logger
 from schemas.book import BookCreateRequest, BookResponse
 from schemas.borrows import BorrowResponse
 from schemas.exception import HTTPExceptionResponse
 from services.book import BookService
 
 router = APIRouter()
+logger = get_logger(__name__)
 
 
 @router.post(
@@ -31,6 +33,7 @@ async def create_book(
 async def get_books(
     service: BookService = Depends(get_book_service), user_ordering: BookFilter = FilterDepends(BookFilter)
 ) -> LimitOffsetPage[BookResponse]:
+    logger.info("get_books")
     return await service.get_all(user_ordering)
 
 

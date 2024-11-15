@@ -24,6 +24,9 @@ class Config(BaseSettings):
     AUTH_COOKIE_SECURE: bool
     AUTH_COOKIE_SAME_SITE: Literal["lax", "none", "strict"]
 
+    LOG_AWS_ACCESS_KEY: str
+    LOG_AWS_SECRET_ACCESS_KEY: str
+
     @property
     def DB_URL(self) -> str:
         return (
